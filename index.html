@@ -31,9 +31,9 @@
     <div class="input-group">
       <label>Training Focus:</label>
       <select id="training-goal">
-        <option value="90">Masa (90s rest)</option>
-        <option value="180">Siła (180s rest)</option>
-        <option value="60">Rzeźba (60s rest)</option>
+        <option value="90">Hypertrophy (90s rest)</option>
+        <option value="180">Power (180s rest)</option>
+        <option value="60">Cut/Shred (60s rest)</option>
       </select>
     </div>
 
@@ -47,47 +47,60 @@
       <select id="exercise-type" onchange="showLastResult(this.value)">
         <option value="">-- Choose Exercise --</option>
         
-        <optgroup label="CHEST (Klatka)">
+       <optgroup label="CHEST" id="group-chest">
           <option value="Chest-Bench-Press">Flat Bench Press (Barbell)</option>
           <option value="Chest-DB-Press">Dumbbell Press</option>
-          <option value="Chest-Flyes">Dumbbell Flyes (Rozpiętki)</option>
-          <option value="Chest-Cable-Crossover">Cable Crossover (Linki)</option>
-          <option value="Chest-Incline-Press">Incline Press (Upper)</option>
+          <option value="Chest-Incline-Press">Incline Press</option>
+          <option value="Chest-Flyes">Dumbbell Flyes</option>
+          <option value="Chest-Pushups-Standard">Pushups (Standard)</option>
+          <option value="Chest-Pushups-Wide">Pushups (Wide)</option>
+          <option value="Chest-Pushups-Diamond">Pushups (Diamond)</option>
+          <option value="Chest-Pushups-OneArm">Pushups (One Arm)</option>
+          <option value="Chest-Dips">Dips (Chest Focus)</option>
         </optgroup>
-        
-        <optgroup label="BACK (Plecy)">
-            <option value="Back-Deadlift">Deadlift (Martwy Ciag)</option>
-            <option value="Back-Pull-Ups">Pull-Ups (Podciaganie- BW)</option>
-            <option value="Back-Lat-Pulldown">Lat Pulldown (Wyciag gorny)</option>
-            <option value="Back-Row-Barbell">Barbell Row (Wioslowanie gryf)</option>
-            <option value="Back-Row-Dumbell">DB Row (Wioslowanie hantel)</option>
+
+        <optgroup label="BACK" id="group-back">
+          <option value="Back-Deadlift">Deadlift</option>
+          <option value="Back-Pull-Ups">Pull-Ups (BW)</option>
+          <option value="Back-Lat-Pulldown">Lat Pulldown</option>
+          <option value="Back-Row-Barbell">Barbell Row</option>
+          <option value="Back-Row-Dumbbell">Dumbbell Row</option>
+          <option value="Back-Hyperextensions">Hyperextensions</option>
         </optgroup>
-        
-        <optgroup label="SHOULDERS (Barki)">
-          <option value="Shoulders-Military">Military Press (Gryf)</option>
-          <option value="Shoulders-Lateral-Raises">Lateral Raises (Hantle)</option>
+
+        <optgroup label="SHOULDERS" id="group-shoulders">
+          <option value="Shoulders-Military">Military Press</option>
+          <option value="Shoulders-DB-Press">Dumbbell Shoulder Press</option>
+          <option value="Shoulders-Lateral-Raises">Lateral Raises</option>
           <option value="Shoulders-Front-Raises">Front Raises</option>
-          <option value="Shoulders-Face-Pulls">Face Pulls (Linki)</option>
+          <option value="Shoulders-Face-Pulls">Face Pulls</option>
+          <option value="Shoulders-Rear-Delt-Flyes">Rear Delt Flyes</option>
         </optgroup>
 
-        <optgroup label="ARMS (Biceps & Triceps)">
+        <optgroup label="ARMS" id="group-arms">
+          <option value="Arms-Preacher-Curl">Preacher Curl (Machine)</option>
           <option value="Arms-BB-Curl">Barbell Curl (Biceps)</option>
-          <option value="Arms-DB-Hammer">Hammer Curls (Hantle)</option>
-          <option value="Arms-Pushdowns">Triceps Pushdowns (Linki)</option>
-          <option value="Arms-Skull-Crushers">Skull Crushers (Francuskie)</option>
+          <option value="Arms-DB-Hammer">Hammer Curls</option>
+          <option value="Arms-Pushdowns">Triceps Pushdowns (Cable)</option>
+          <option value="Arms-Skull-Crushers">Skull Crushers</option>
+          <option value="Arms-Dips-Triceps">Dips (Triceps Focus)</option>
         </optgroup>
 
-        <optgroup label="LEGS (Nogi & Łydki)">
+        <optgroup label="LEGS" id="group-legs">
           <option value="Legs-Squats">Back Squats</option>
           <option value="Legs-Leg-Press">Leg Press</option>
+          <option value="Legs-Leg-Extension">Leg Extension (Quad Focus)</option>
+          <option value="Legs-Leg-Curl">Leg Curl (Hamstring Focus)</option>
+          <option value="Legs-Lunge">Lunges</option>
           <option value="Legs-Calf-Standing">Standing Calf Raises</option>
           <option value="Legs-Calf-Seated">Seated Calf Raises</option>
         </optgroup>
 
-        <optgroup label="ABS (Brzuch)">
+        <optgroup label="ABS" id="group-abs">
           <option value="ABS-Crunches">Crunches</option>
           <option value="ABS-Leg-Raises">Leg Raises</option>
-          <option value="ABS-Plank">Plank (Seconds)</option>
+          <option value="ABS-Plank">Plank</option>
+          <option value="ABS-Russian-Twist">Russian Twist</option>
         </optgroup>
       </select>
     </div>
@@ -106,6 +119,7 @@
         <option value="10">RPE 10 - Max</option>
         <option value="9">RPE 9</option>
         <option value="8">RPE 8</option>
+        <option value="7">RPE 7</option>
         <option value="6">RPE 6</option>
         <option value="5">RPE 5</option>
         <option value="4">RPE 4</option>
@@ -123,6 +137,27 @@
     <div id="workout-log-container" class="card">
         <div id="workout-list"></div>
     </div>
+      <button onclick="openHistoryModal()" class="secondary-btn" style="width:100%; margin-top:10px; background:#444;">VIEW FULL HISTORY</button>
+
+    <div id="history-modal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); overflow-y:auto;">
+    <div class="modal-content" style="background:#1a1a1a; margin:5% auto; padding:20px; border:1px solid #00f2ff; width:90%; border-radius:15px;">
+     <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="color:#00f2ff; margin:0;">STRENGTH ARCHIVE</h2>
+     <button onclick="closeHistoryModal()" style="background:red; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">CLOSE [X]</button>
+        </div>
+    
+     <div style="margin: 20px 0;">
+        <label>Filter Month:</label>
+        <select id="month-filter" onchange="renderFullHistory()" style="background:#333; color:white; padding:5px;">
+            <option value="all">All Time</option>
+            <option value="03.2026">March 2026</option>
+            <option value="02.2026">February 2026</option>
+        </select>
+    </div>
+
+    <div id="full-history-table"></div>
+  </div>
+</div>
 
   </div> </div> <script src="arv_gym_v2-0.js"></script>
 </body>

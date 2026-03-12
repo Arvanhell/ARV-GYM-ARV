@@ -8,36 +8,48 @@ function getTodaySets(exerciseName) {
     return workoutHistory.filter(e => e.exercise === exerciseName && e.date === today).length + 1;
 }
 
-// --- 2. INTELIGENTNY RADAR ---
+// --- 2. INTELIGENTNY RADAR (Wersja 2.0 - Burnout Update) ---
 function showLastResult(exerciseName) {
     const infoBox = $("last-result-info");
     if (!infoBox) return;
     if (!exerciseName) {
-        infoBox.innerHTML = "Select exercise to see stats...";
+        infoBox.innerHTML = (currentLang === 'pl') ? "Wybierz cwiczenie, aby zobaczyc statystyki..." : "Select exercise to see stats...";
         return;
     }
     
+    // Filtrowanie historii pod konkretne ćwiczenie
     const exerciseHistory = workoutHistory.filter(e => e.exercise === exerciseName);
     const lastEntry = exerciseHistory[0]; 
     const allWeights = exerciseHistory.map(e => parseFloat(e.weight)).filter(w => !isNaN(w));
     const personalRecord = allWeights.length > 0 ? Math.max(...allWeights) : null;
 
-    let content = `<b>Target: ${exerciseName}</b><br>`;
+    let content = `<b style="color:#00f2ff">${exerciseName}</b><br>`;
     
     if (lastEntry) {
-        content += `⏱️ Last: <span style="color:#00f2ff">${lastEntry.weight}kg x ${lastEntry.reps}</span> (@${lastEntry.rpe})<br>`;
-        if (personalRecord) content += `🏆 Personal Record: <span style="color:#ffcc00">${personalRecord}kg</span><br>`;
+        // Wyświetlanie ostatniego wyniku
+        content += `⏱️ Last: <span style="color:#00f2ff">${lastEntry.weight}kg x ${lastEntry.reps}</span> (@RPE ${lastEntry.rpe})<br>`;
+        if (personalRecord) content += `🏆 PR: <span style="color:#ffcc00">${personalRecord}kg</span><br>`;
         
-        if (parseInt(lastEntry.rpe) >= 12) {
-            content += `<span style="color:#ff4444">⚠️ Extreme Burn! Keep load.</span>`;
+        // --- LOGIKA ANALIZY PROGRESU ---
+        const rpeVal = parseInt(lastEntry.rpe);
+
+        if (rpeVal >= 15) {
+            content += `<span style="color:#ff0000; font-weight:bold;">🔥 BURNOUT! Overload detected. Stay here.</span>`;
+        } else if (rpeVal >= 12) {
+            content += `<span style="color:#ff4444; font-weight:bold;">⚠️ HOT! Extreme effort. Keep load.</span>`;
+        } else if (rpeVal >= 9) {
+            content += `<span style="color:#ffcc00">💪 Heavy. Try +1 rep or +0.5kg next.</span>`;
         } else {
-            content += `<span style="color:#00ff88">🚀 Solid! Try +1.25/2.5kg or +1-2 reps.</span>`;
+            content += `<span style="color:#00ff88">🚀 Solid! Push it: +2.5kg or +2 reps.</span>`;
         }
     } else {
-        content += `<span style="color:#aaa">First time with this exercise!</span>`;
+        content += `<span style="color:#aaa">First time with this exercise! Build your base.</span>`;
     }
 
-    content += `<br><b style="color:#fff">Current Session: Set #${getTodaySets(exerciseName)}</b>`;
+    // Licznik serii w bieżącej sesji
+    const setsToday = getTodaySets(exerciseName);
+    content += `<br><b style="color:#fff">Current Session: Set #${setsToday}</b>`;
+    
     infoBox.innerHTML = content;
 }
 
@@ -49,8 +61,8 @@ function saveWorkoutToLog() {
     let rpe = $("rpe-select").value;
     let currentUser = $("user-selector").value;
 
-    if (!exType) return alert("Cezar, wybierz cwiczenie!");
-    if (!reps) return alert("Wpisz powtorzenia!");
+    if (!exType) return alert(`${currentUser}, pick exercise!`);
+    if (!reps) return alert("How many repetition!");
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const now = new Date();
@@ -130,7 +142,7 @@ function startRestTimer() {
 let currentLang = 'en';
 
 function addNewUser() {
-    const name = prompt("Add New user name (no polish chars):");
+    const name = prompt("Add New user name:");
     if (name) {
         const select = $("user-selector");
         const option = document.createElement('option');
