@@ -209,14 +209,14 @@ window.onload = () => {
     changeLang('en');
 };
 
-// 1. Słuchacz na przycisku (używając Twojego $)
+// 1. Słuchacz zdarzeń
 if ($('viewHistoryBtn')) {
     $('viewHistoryBtn').addEventListener('click', () => {
         showHistory();
     });
 }
 
-// 2. Funkcja otwierająca (też z Twoim $)
+// 2. Funkcja inicjująca historię
 function showHistory() {
     const history = JSON.parse(localStorage.getItem('gymHistory')) || [];
     if (history.length === 0) {
@@ -226,15 +226,38 @@ function showHistory() {
     renderHistoryModal(history); 
 }
 
-// 3. W funkcji renderującej też podmieniamy:
+// 3. Pełna funkcja budująca okno (Modal)
 function renderHistoryModal(history) {
-    let modal = $('historyModal'); // Krótko i na temat
+    let modal = $('historyModal');
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'historyModal';
-        // ... reszta stylu bez zmian ...
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto; padding:20px; color:white; font-family:sans-serif;';
         document.body.appendChild(modal);
     }
-    // ... reszta logiki ...
+
+    // Sortujemy od najnowszych wpisów
+    const sortedHistory = [...history].reverse();
+
+    let html = `<div style="max-width:600px; margin:auto;">
+        <h2 style="text-align:center; color:#00ff00;">${currentLang === 'pl' ? 'HISTORIA MOCY' : 'POWER HISTORY'}</h2>
+        <button onclick="$('historyModal').style.display='none'" style="width:100%; padding:12px; margin-bottom:20px; background:#444; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ZAMKNIJ / CLOSE</button>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr style="border-bottom:2px solid #666; background:#222;">
+                <th style="padding:10px; text-align:left;">Data</th>
+                <th style="padding:10px; text-align:left;">Ćwiczenie</th>
+                <th style="padding:10px;">KG</th>
+            </tr>`;
+
+    sortedHistory.forEach(entry => {
+        html += `<tr style="border-bottom:1px solid #333;">
+            <td style="padding:10px; font-size:0.85em; color:#aaa;">${entry.date}</td>
+            <td style="padding:10px;">${entry.exercise}</td>
+            <td style="padding:10px; text-align:center; font-weight:bold; color:#00ff00;">${entry.weight}</td>
+        </tr>`;
+    });
+
+    html += `</table><div style="height:50px;"></div></div>`;
+    modal.innerHTML = html;
     modal.style.display = 'block';
 }
