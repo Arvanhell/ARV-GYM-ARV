@@ -183,6 +183,7 @@ function loadUsers() {
 const langData = {
     en: { user: "User", focus: "Training Focus:", ex: "Choose Exercise:", weight: "Weight (kg)", reps: "Reps", save: "SAVE SESSION", recent: "Recent Activity" },
     pl: { user: "Uzytkownik", focus: "Cel Treningu:", ex: "Wybierz Cwiczenie:", weight: "Ciezar (kg)", reps: "Powtorzenia", save: "ZAPISZ TRENING", recent: "Ostatnia Aktywnosc" }
+
 };
 
 function changeLang(lang) {
@@ -236,13 +237,20 @@ function renderHistoryModal(history) {
             </tr>`;
 
     sorted.forEach(entry => {
+        // --- KLUCZOWA POPRAWKA LAPSUSA ---
+        let displayEx = entry.exercise; // domyślnie angielska nazwa
+        
+        // Jeśli język to PL i mamy to ćwiczenie w słowniku - podmień nazwę
+        if (currentLang === 'pl' && langData.pl.exercises && langData.pl.exercises[entry.exercise]) {
+            displayEx = langData.pl.exercises[entry.exercise];
+        }
+
         html += `<tr style="border-bottom:1px solid #333;">
             <td style="padding:10px; font-size:0.8em; color:#aaa;">${entry.date}<br>${entry.day}</td>
-            <td style="padding:10px;"><b>${entry.exercise}</b><br><small>User: ${entry.user}</small></td>
+            <td style="padding:10px;"><b>${displayEx}</b><br><small>User: ${entry.user}</small></td>
             <td style="padding:10px; text-align:center; font-weight:bold; color:#00f2ff;">${entry.weight}x${entry.reps}</td>
         </tr>`;
     });
-
     html += `</table><div style="height:100px;"></div></div>`;
     modal.innerHTML = html;
     modal.style.display = 'block';
