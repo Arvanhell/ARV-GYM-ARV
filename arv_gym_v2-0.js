@@ -203,30 +203,18 @@ function changeLang(lang) {
     renderLog(); // Odśwież nagłówek historii
 }
 
-window.onload = () => {
-    loadUsers();
-    renderLog();
-    changeLang('en');
-};
+// --- 7. OBSŁUGA HISTORII (MODAL) ---
 
-// 1. Słuchacz zdarzeń
-if ($('viewHistoryBtn')) {
-    $('viewHistoryBtn').addEventListener('click', () => {
-        showHistory();
-    });
-}
-
-// 2. Funkcja inicjująca historię
-function showHistory() {
-    const history = JSON.parse(localStorage.getItem('gymHistory')) || [];
+window.showHistory = function() {
+    // Pobieramy z 'workoutLogs' - to jest Twoja główna baza danych
+    const history = JSON.parse(localStorage.getItem('workoutLogs')) || [];
     if (history.length === 0) {
-        alert(currentLang === 'pl' ? "Historia jest pusta!" : "History is empty!");
+        alert(currentLang === 'pl' ? "Historia jest pusta! Zapisz pierwszy trening." : "History is empty! Save your first workout.");
         return;
     }
-    renderHistoryModal(history); 
-}
+    renderHistoryModal(history);
+};
 
-// 3. Pełna funkcja budująca okno (Modal)
 function renderHistoryModal(history) {
     let modal = $('historyModal');
     if (!modal) {
@@ -236,28 +224,38 @@ function renderHistoryModal(history) {
         document.body.appendChild(modal);
     }
 
-    // Sortujemy od najnowszych wpisów
-    const sortedHistory = [...history].reverse();
-
+    const sorted = [...history]; // Najnowsze są już na początku dzięki unshift()
     let html = `<div style="max-width:600px; margin:auto;">
-        <h2 style="text-align:center; color:#00ff00;">${currentLang === 'pl' ? 'HISTORIA MOCY' : 'POWER HISTORY'}</h2>
-        <button onclick="$('historyModal').style.display='none'" style="width:100%; padding:12px; margin-bottom:20px; background:#444; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ZAMKNIJ / CLOSE</button>
+        <h2 style="text-align:center; color:#00f2ff; text-transform:uppercase;">${currentLang === 'pl' ? 'Historia Mocy' : 'Power History'}</h2>
+        <button onclick="$('historyModal').style.display='none'" style="width:100%; padding:15px; margin-bottom:20px; background:#ff4444; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ZAMKNIJ / CLOSE</button>
         <table style="width:100%; border-collapse:collapse;">
-            <tr style="border-bottom:2px solid #666; background:#222;">
+            <tr style="border-bottom:2px solid #00f2ff; background:#111;">
                 <th style="padding:10px; text-align:left;">Data</th>
                 <th style="padding:10px; text-align:left;">Ćwiczenie</th>
                 <th style="padding:10px;">KG</th>
             </tr>`;
 
-    sortedHistory.forEach(entry => {
+    sorted.forEach(entry => {
         html += `<tr style="border-bottom:1px solid #333;">
-            <td style="padding:10px; font-size:0.85em; color:#aaa;">${entry.date}</td>
-            <td style="padding:10px;">${entry.exercise}</td>
-            <td style="padding:10px; text-align:center; font-weight:bold; color:#00ff00;">${entry.weight}</td>
+            <td style="padding:10px; font-size:0.8em; color:#aaa;">${entry.date}<br>${entry.day}</td>
+            <td style="padding:10px;"><b>${entry.exercise}</b><br><small>User: ${entry.user}</small></td>
+            <td style="padding:10px; text-align:center; font-weight:bold; color:#00f2ff;">${entry.weight}x${entry.reps}</td>
         </tr>`;
     });
 
-    html += `</table><div style="height:50px;"></div></div>`;
+    html += `</table><div style="height:100px;"></div></div>`;
     modal.innerHTML = html;
     modal.style.display = 'block';
 }
+
+// --- 8. START SYSTEMU (TO MUSI BYĆ NA SAMYM DOLE) ---
+window.onload = () => {
+    loadUsers();
+    renderLog();
+    changeLang('en'); // Ustawia domyślny język i odświeża interfejs
+    
+    // Podpinamy przycisk, jeśli istnieje w HTML
+    if ($('viewHistoryBtn')) {
+        $('viewHistoryBtn').addEventListener('click', showHistory);
+    }
+};
