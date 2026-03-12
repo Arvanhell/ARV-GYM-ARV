@@ -181,15 +181,105 @@ function loadUsers() {
 }
 
 const langData = {
-    en: { user: "User", focus: "Training Focus:", ex: "Choose Exercise:", weight: "Weight (kg)", reps: "Reps", save: "SAVE SESSION", recent: "Recent Activity" },
-    pl: { user: "Uzytkownik", focus: "Cel Treningu:", ex: "Wybierz Cwiczenie:", weight: "Ciezar (kg)", reps: "Powtorzenia", save: "ZAPISZ TRENING", recent: "Ostatnia Aktywnosc" }
+    en: { user: "User",
+          focus: "Training Focus:",
+          ex: "Choose Exercise:",
+          weight: "Weight (kg)",
+          reps: "Reps",
+          save: "SAVE SESSION",
+          recent: "Recent Activity",
+          exNames : {
+              "Chest-bench-Press": "Flat Bench Press (Barbell)",
+              "Chest-DB-Press": "Dumbbell Press",
+              "CHest-Incline-Press": "Incline Press",
+              "Chest-Flyes": "Dumbbell Flyes",
+              "Chest-Pushups-Standards": "Pushup (Standard)",
+              "Chest-Pushup-Wide": "Pushup (Wide)",
+              "Chest-Pushup-Diamond": "Pushup (Diamond)",
+              "Chest-Dips": "Chest Focus",
+              "Back-Deadlift": "Deadlift",
+              "Back-Pull-Ups": "Pull-Ups (BW)",
+              "Back-Lat-Pulldown": "Lat Puldown",
+              "Back-Row-Barbell": "Barbell Row",
+              "Back-Row-Dumbbell":"Dumbbell Row",
+              "Back-Hyperextensions": "Hyperextensions",
+              "Shoulder-Military": "Military Press",
+              "Shoulder-DB-Press": "Dumbbell Shoulder Press",
+              "Shoulder-Lateral-Raises": "Lateral Raises",
+              "Shoulder-Front-raises": "Front Raises",
+              "Shoulder-Face-Pulls": "Face Pulls",
+              "Shoulder-Rear-Delt-Flyes": "Rear Delt Flyes",
+              "Arms-Preacher-Curl": "Preacher Curl (Machine)",
+              "Arms-BB-Curl": "Barbell Curl (Biceps)",
+              "Arms-DB-Hammer": "Hammer Curls",
+              "Arms-Pushdowns": "Triceps Pushdown (Cable)",
+              "Arms-Skull-Crushers": "Skull Crushers",
+              "Arms-Dips-Triceps": "Dips (Triceps Focus)",
+              "Legs-Squats": "Back Squats",
+              "Legs-Leg-Press": "Leg Press",
+              "Legs-Leg-Extension": "Leg Extension",
+              "Legs-Leg-Curl": "Leg Curl",
+              "Legs-Lunge": "Lunges",
+              "Legs-Calf-Standing": "Standing Calf Raises",
+              "Legs-Calf-Seated": "Seated Calf Raises",
+              "ABS-Crunches": "Crunches",
+              "ABS-Leg-Raises": "Leg Raises",
+              "ABS-Plank": "Plank",
+              "ABS-Russian-Twist": "Russian Twist"
+          }
+},
 
-};
-
+    pl: { user: "Uzytkownik",
+          focus: "Cel Treningu:",
+          ex: "Wybierz Cwiczenie:",
+          weight: "Ciezar (kg)", 
+          reps: "Powtorzenia", 
+          save: "ZAPISZ TRENING", 
+          recent: "Ostatnia Aktywnosc",
+          exNames: {
+              "Chest-Bench-Press": "Wyciskanie na plaskiej (sztanga)",
+              "Chest-DB-Press": "Wyciskanie hantli",
+              "Chest-Incline-Press": "Wyciskanie skos dodatni",
+              "Chest-Flyes": "Rozpietki z hantlami",
+              "Chest-Pushups-Standard": "Pompki klasyczne",
+              "Chest-Pushups-Wide": "Pompki szerokie",
+              "Chest-Pushups-Diamond": "Pompki diamentowe",
+              "Chest-Pushups-OneArm": "Pompki jednoracz",
+              "Chest-Dips": "Dipsy (Klatka)",
+              "Back-Deadlift": "Martwy ciag",
+              "Back-Pull-Ups": "Podciaganie (Ciezar ciala)",
+              "Back-Lat-Pulldown": "Sciaganie drazka",
+              "Back-Row-Barbell": "Wioslowanie sztanga",
+              "Back-Hyperextensions": "Wyprost na lawce rzymskiej",
+              "Shoulder-Military": "Wyciskanie zolnierskie",
+              "Shoulder-DB-Press": "Wyciskanie hantli siedzac",
+              "Shoulder-Lateral-Raises": "Wznosy bokiem",
+              "Shoulder-Front-Raises": "Wznosy przodem",
+              "Shoulder-Face-Pulls": "Przyciaganie do twarzy",
+              "Shoulder-Rear-Delt-Flyes": "Odwrotne Rozpietki",
+              "Arms-Preacher-Curl": "Modlitewnik (Maszyna)",
+              "Arms-BB-Curl": "Uginanie ramion ze sztanga",
+              "Arms-DB-Hammer": "Uginanie mlotkowe",
+              "Arms-Pushdowns": "Prostowanie ramion (Wyciag)",
+              "Arms-Skull-Crushers": "Wyciskanie francuskie",
+              "Arms-Dips-Triceps": "Dipsy (Triceps)",
+              "Legs-Squats": "Przysiady ze sztanga",
+              "Legs-Leg-Press": "Suwnica",
+              "Legs-Leg-Extension": "Prostowanie nog",
+              "Legs-Leg-Curl": "Uginanie nog",
+              "Legs-Lunge": "Wykroki",
+              "Legs-Calf-Standing": "Wspiecia stojac",
+              "Legs-Calf-Saeted": "Wspiecia siedzac",
+              "ABS-Crunches": "Brzuszki",
+              "ABS-Leg-Raises": "Wznosy nog",
+              "ABS-Plank": "Plank (deska)",
+              "ABS-Rusian-Twist": "Russian Twist"
+          }
+    }
+}
 function changeLang(lang) {
     currentLang = lang;
     if ($("lbl-user-select")) $("lbl-user-select").innerText = langData[lang].user;
-    
     // Tłumaczenie etykiet nad selectami
     const labels = document.querySelectorAll('.input-group label');
     if (labels[0]) labels[0].innerText = langData[lang].focus;
@@ -241,8 +331,8 @@ function renderHistoryModal(history) {
         let displayEx = entry.exercise; // domyślnie angielska nazwa
         
         // Jeśli język to PL i mamy to ćwiczenie w słowniku - podmień nazwę
-        if (currentLang === 'pl' && langData.pl.exercises && langData.pl.exercises[entry.exercise]) {
-            displayEx = langData.pl.exercises[entry.exercise];
+        if (currentLang === 'pl' && langData.pl.exNames && langData.pl.exNames[entry.exercise]) {
+            displayEx = langData.pl.exNames[entry.exercise];
         }
 
         html += `<tr style="border-bottom:1px solid #333;">
