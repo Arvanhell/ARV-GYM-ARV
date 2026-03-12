@@ -208,3 +208,33 @@ window.onload = () => {
     renderLog();
     changeLang('en');
 };
+
+// 1. Słuchacz na przycisku (używając Twojego $)
+if ($('viewHistoryBtn')) {
+    $('viewHistoryBtn').addEventListener('click', () => {
+        showHistory();
+    });
+}
+
+// 2. Funkcja otwierająca (też z Twoim $)
+function showHistory() {
+    const history = JSON.parse(localStorage.getItem('gymHistory')) || [];
+    if (history.length === 0) {
+        alert(currentLang === 'pl' ? "Historia jest pusta!" : "History is empty!");
+        return;
+    }
+    renderHistoryModal(history); 
+}
+
+// 3. W funkcji renderującej też podmieniamy:
+function renderHistoryModal(history) {
+    let modal = $('historyModal'); // Krótko i na temat
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'historyModal';
+        // ... reszta stylu bez zmian ...
+        document.body.appendChild(modal);
+    }
+    // ... reszta logiki ...
+    modal.style.display = 'block';
+}
